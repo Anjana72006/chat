@@ -72,51 +72,61 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: "linear-gradient(135deg, #03533b, #dfe6e5)",
+    background: "linear-gradient(135deg, #000000, #222222)",
     fontFamily: "Arial",
   },
+
   card: {
     width: "320px",
     padding: "25px",
     borderRadius: "12px",
-    backgroundColor: "white",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+    backgroundColor: "#111111",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
     textAlign: "center",
   },
+
   title: {
     marginBottom: "5px",
-    color: "#075E54",
+    color: "#ffffff",
   },
+
   subtitle: {
     marginBottom: "20px",
     fontSize: "14px",
-    color: "gray",
+    color: "#aaaaaa",
   },
+
   input: {
     width: "100%",
     padding: "10px",
     margin: "8px 0",
     borderRadius: "8px",
-    border: "1px solid #ccc",
+    border: "1px solid #444",
     outline: "none",
+    backgroundColor: "#222222",
+    color: "#ffffff",
   },
+
   button: {
     width: "100%",
     padding: "10px",
     marginTop: "10px",
     borderRadius: "8px",
     border: "none",
-    backgroundColor: "#075E54",
+    backgroundColor: "#000000",
     color: "white",
     cursor: "pointer",
     fontWeight: "bold",
   },
+
   switchText: {
     marginTop: "15px",
     fontSize: "13px",
+    color: "#cccccc",
   },
+
   link: {
-    color: "#128C7E",
+    color: "#ffffff",
     cursor: "pointer",
     fontWeight: "bold",
   },
