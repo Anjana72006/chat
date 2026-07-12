@@ -131,8 +131,8 @@ export default function Chat() {
       >
         <div
           style={{
-            background: "#075E54",
-            color: "white",
+           background: "#4b5563",
+            color: "#e5e7eb",
             padding: "18px",
             fontSize: "20px",
             fontWeight: "bold",
@@ -161,8 +161,8 @@ export default function Chat() {
             style={{
               width: "100%",
               padding: "10px",
-              background: "#128C7E",
-              color: "white",
+             background: "#6b7280",
+             color: "#f3f4f6",
               border: "none",
               borderRadius: "20px",
               cursor: "pointer",
