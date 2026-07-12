@@ -30,7 +30,7 @@ export default function Auth() {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.title}>💬 Chat App</h2>
+        <h2 style={styles.title}> CHAT APP </h2>
         <p style={styles.subtitle}>
           {isLogin ? "Welcome back!" : "Create your account"}
         </p>
@@ -72,7 +72,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: "linear-gradient(135deg, #075E54, #128C7E)",
+    background: "linear-gradient(135deg, #03533b, #dfe6e5)",
     fontFamily: "Arial",
   },
   card: {
