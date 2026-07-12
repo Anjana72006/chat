@@ -1,26 +1,45 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import {
   collection,
   addDoc,
-  query,
   onSnapshot,
+  query,
   serverTimestamp,
   deleteDoc,
   doc,
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
-function Chat() {
+export default function Chat() {
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [room, setRoom] = useState("general");
+  const [rooms, setRooms] = useState([]);
+  const [room, setRoom] = useState("");
+  const [newRoom, setNewRoom] = useState("");
 
-  const bottomRef = useRef(null);
+  // Load Rooms
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "rooms"), (snapshot) => {
+      const roomList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
+      setRooms(roomList);
+
+      if (roomList.length > 0 && room === "") {
+        setRoom(roomList[0].name);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [room]);
+
+  // Load Messages
   useEffect(() => {
     const q = query(collection(db, "messages"));
 
@@ -30,13 +49,7 @@ function Chat() {
         ...doc.data(),
       }));
 
-      const filtered = data
-        .filter((msg) => msg.room === room)
-        .sort(
-          (a, b) =>
-            (a.createdAt?.seconds || 0) -
-            (b.createdAt?.seconds || 0)
-        );
+      const filtered = data.filter((msg) => msg.room === room);
 
       setMessages(filtered);
     });
@@ -44,29 +57,41 @@ function Chat() {
     return () => unsubscribe();
   }, [room]);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   const sendMessage = async () => {
-    if (message.trim() === "") return;
+    if (!message.trim()) return;
 
     await addDoc(collection(db, "messages"), {
       text: message,
       user: auth.currentUser.email,
-      room: room,
+      room,
       createdAt: serverTimestamp(),
     });
 
     setMessage("");
   };
 
-  const deleteMessage = async (id) => {
-    try {
-      await deleteDoc(doc(db, "messages", id));
-    } catch (error) {
-      alert(error.message);
+  const createRoom = async () => {
+    if (!newRoom.trim()) return;
+
+    const exists = rooms.some(
+      (r) => r.name.toLowerCase() === newRoom.toLowerCase()
+    );
+
+    if (exists) {
+      alert("Room already exists");
+      return;
     }
+
+    await addDoc(collection(db, "rooms"), {
+      name: newRoom,
+    });
+
+    setRoom(newRoom);
+    setNewRoom("");
+  };
+
+  const deleteMessage = async (id) => {
+    await deleteDoc(doc(db, "messages", id));
   };
 
   const logout = async () => {
@@ -75,194 +100,242 @@ function Chat() {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.chatContainer}>
-        <div style={styles.header}>
-          <h2>💬 React Chat</h2>
-
-          <div>
-            <select
-              value={room}
-              onChange={(e) => setRoom(e.target.value)}
-              style={styles.select}
-            >
-              <option value="general">General</option>
-              <option value="tech">Tech</option>
-              <option value="sports">Sports</option>
-            </select>
-
-            <button style={styles.logout} onClick={logout}>
-              Logout
-            </button>
-          </div>
+  <div
+    style={{
+      display: "flex",
+      width: "100%",
+      height: "100vh",
+      background: "#dadbd3",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        width: "95%",
+        height: "95vh",
+        display: "flex",
+        background: "#fff",
+        boxShadow: "0 2px 15px rgba(0,0,0,0.2)",
+      }}
+    >
+      {/* Sidebar */}
+      <div
+        style={{
+          width: "30%",
+          background: "#f0f2f5",
+          display: "flex",
+          flexDirection: "column",
+          borderRight: "1px solid #ddd",
+        }}
+      >
+        <div
+          style={{
+            background: "#075E54",
+            color: "white",
+            padding: "18px",
+            fontSize: "20px",
+            fontWeight: "bold",
+          }}
+        >
+          💬 React Chat
         </div>
 
-        <div style={styles.messages}>
-          {messages.length === 0 ? (
-            <p style={{ textAlign: "center", color: "gray" }}>
-              No messages yet.
-            </p>
-          ) : (
-            messages.map((msg) => (
-              <div
-                key={msg.id}
-                style={{
-                  ...styles.message,
-                  alignSelf:
-                    msg.user === auth.currentUser.email
-                      ? "flex-end"
-                      : "flex-start",
-                  background:
-                    msg.user === auth.currentUser.email
-                      ? "#DCF8C6"
-                      : "#ffffff",
-                }}
-              >
-                <small style={styles.user}>{msg.user}</small>
-
-                <div>{msg.text}</div>
-
-                {msg.user === auth.currentUser.email && (
-                  <button
-                    style={styles.deleteBtn}
-                    onClick={() => deleteMessage(msg.id)}
-                  >
-                    🗑 Delete
-                  </button>
-                )}
-              </div>
-            ))
-          )}
-
-          <div ref={bottomRef}></div>
-        </div>
-
-        <div style={styles.inputArea}>
+        <div style={{ padding: "15px" }}>
           <input
-            type="text"
-            placeholder="Type a message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            style={styles.input}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") sendMessage();
+            value={newRoom}
+            onChange={(e) => setNewRoom(e.target.value)}
+            placeholder="Create new room..."
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "20px",
+              border: "1px solid #ccc",
+              outline: "none",
+              marginBottom: "10px",
             }}
           />
 
-          <button style={styles.send} onClick={sendMessage}>
+          <button
+            onClick={createRoom}
+            style={{
+              width: "100%",
+              padding: "10px",
+              background: "#128C7E",
+              color: "white",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+            }}
+          >
+            + Create Room
+          </button>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+          }}
+        >
+          {rooms.map((r) => (
+            <div
+              key={r.id}
+              onClick={() => setRoom(r.name)}
+              style={{
+                padding: "15px",
+                cursor: "pointer",
+                background:
+                  room === r.name ? "#d9fdd3" : "white",
+                borderBottom: "1px solid #eee",
+                fontWeight:
+                  room === r.name ? "bold" : "normal",
+              }}
+            >
+              💬 {r.name}
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={logout}
+          style={{
+            margin: "15px",
+            padding: "10px",
+            border: "none",
+            borderRadius: "20px",
+            background: "#d9534f",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Chat Area */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          background: "#efeae2",
+        }}
+      >
+        <div
+          style={{
+            background: "#075E54",
+            color: "white",
+            padding: "18px",
+            fontSize: "20px",
+            fontWeight: "bold",
+          }}
+        >
+          💬 {room}
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "20px",
+          }}
+        >
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              style={{
+                display: "flex",
+                justifyContent:
+                  msg.user === auth.currentUser.email
+                    ? "flex-end"
+                    : "flex-start",
+                marginBottom: "12px",
+              }}
+            >
+              <div
+                style={{
+                  background:
+                    msg.user === auth.currentUser.email
+                      ? "#DCF8C6"
+                      : "white",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  maxWidth: "60%",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
+                }}
+              >
+                <strong>{msg.user}</strong>
+
+                <div style={{ marginTop: "5px" }}>
+                  {msg.text}
+                </div>
+
+                {msg.user === auth.currentUser.email && (
+                  <button
+                    onClick={() => deleteMessage(msg.id)}
+                    style={{
+                      marginTop: "8px",
+                      border: "none",
+                      background: "#d9534f",
+                      color: "white",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            padding: "15px",
+            background: "#f0f2f5",
+          }}
+        >
+          <input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") sendMessage();
+            }}
+            placeholder="Type a message..."
+            style={{
+              flex: 1,
+              padding: "12px",
+              borderRadius: "25px",
+              border: "1px solid #ccc",
+              outline: "none",
+            }}
+          />
+
+          <button
+            onClick={sendMessage}
+            style={{
+              marginLeft: "10px",
+              padding: "12px 20px",
+              border: "none",
+              borderRadius: "25px",
+              background: "#128C7E",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
             Send
           </button>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
-
-const styles = {
-  page: {
-    height: "100vh",
-    background: "#d9dbd5",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  chatContainer: {
-    width: "900px",
-    height: "90vh",
-    background: "#ece5dd",
-    display: "flex",
-    flexDirection: "column",
-    borderRadius: "10px",
-    overflow: "hidden",
-    boxShadow: "0 5px 20px rgba(0,0,0,0.2)",
-  },
-
-  header: {
-    background: "#075E54",
-    color: "white",
-    padding: "15px 20px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  select: {
-    padding: "8px",
-    borderRadius: "5px",
-    marginRight: "10px",
-  },
-
-  logout: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "5px",
-    background: "#d9534f",
-    color: "white",
-    cursor: "pointer",
-  },
-
-  messages: {
-    flex: 1,
-    padding: "20px",
-    overflowY: "auto",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-
-  message: {
-    padding: "10px 14px",
-    borderRadius: "10px",
-    maxWidth: "60%",
-    wordBreak: "break-word",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
-  },
-
-  user: {
-    color: "#555",
-    fontWeight: "bold",
-    display: "block",
-    marginBottom: "5px",
-  },
-
-  inputArea: {
-    display: "flex",
-    padding: "15px",
-    background: "#f0f0f0",
-  },
-
-  input: {
-    flex: 1,
-    padding: "12px",
-    borderRadius: "25px",
-    border: "1px solid #ccc",
-    outline: "none",
-    fontSize: "16px",
-  },
-
-  send: {
-    marginLeft: "10px",
-    padding: "12px 22px",
-    background: "#128C7E",
-    color: "white",
-    border: "none",
-    borderRadius: "25px",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-
-  deleteBtn: {
-    marginTop: "8px",
-    padding: "5px 10px",
-    background: "#d9534f",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "12px",
-    alignSelf: "flex-end",
-  },
-};
-
-export default Chat;
+  
+      
+  
