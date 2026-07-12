@@ -224,7 +224,7 @@ export default function Chat() {
       >
         <div
           style={{
-            background: "#075E54",
+            background:"#4b5563",
             color: "white",
             padding: "18px",
             fontSize: "20px",
@@ -322,7 +322,7 @@ export default function Chat() {
               padding: "12px 20px",
               border: "none",
               borderRadius: "25px",
-              background: "#128C7E",
+              background: "#6b7280",
               color: "white",
               cursor: "pointer",
               fontWeight: "bold",
