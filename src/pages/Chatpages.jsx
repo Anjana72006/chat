@@ -101,38 +101,29 @@ export default function Chat() {
 
   return (
   <div
-   style={{
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  minHeight: "100vh",
-  width: "100%",
-  padding: "15px",
-  boxSizing: "border-box",
-  background:
-    "linear-gradient(135deg,#667eea 0%,#764ba2 50%,#6a11cb 100%)",
-}}
+    style={{
+      display: "flex",
+      width: "100%",
+      height: "100vh",
+      background: "#dadbd3",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
   >
     <div
-     style={{
-  width: "100%",
-  maxWidth: "1400px",
-  height: "92vh",
-  display: "flex",
-  background: "rgba(255,255,255,0.15)",
-  backdropFilter: "blur(20px)",
-  borderRadius: "25px",
-  overflow: "hidden",
-  boxShadow: "0 20px 50px rgba(0,0,0,.25)",
-}}
+      style={{
+        width: "95%",
+        height: "95vh",
+        display: "flex",
+        background: "#fff",
+        boxShadow: "0 2px 15px rgba(0,0,0,0.2)",
+      }}
     >
       {/* Sidebar */}
       <div
         style={{
-          width: window.innerWidth < 768 ? "90px" : "320px",
-          minWidth: window.innerWidth < 768 ? "90px" : "280px",
-         background:"rgba(255,255,255,.08)",
-         backdropFilter:"blur(15px)",
+          width: "30%",
+          background: "#f0f2f5",
           display: "flex",
           flexDirection: "column",
           borderRight: "1px solid #ddd",
@@ -140,7 +131,7 @@ export default function Chat() {
       >
         <div
           style={{
-           background:"linear-gradient(135deg,#667eea,#764ba2)",
+           background: "#4b5563",
             color: "#e5e7eb",
             padding: "18px",
             fontSize: "20px",
@@ -194,21 +185,8 @@ export default function Chat() {
               style={{
                 padding: "15px",
                 cursor: "pointer",
-              background:
-               room===r.name
-                ? "linear-gradient(90deg,#6366f1,#8b5cf6)"
-                : "transparent",
-
-                color:
-                room===r.name
-                ? "white"
-                : "#fff",
-
-                borderRadius:"12px",
-
-                margin:"8px",
-
-                transition:".3s",
+                background:
+                  room === r.name ? "#d9fdd3" : "white",
                 borderBottom: "1px solid #eee",
                 fontWeight:
                   room === r.name ? "bold" : "normal",
@@ -246,8 +224,7 @@ export default function Chat() {
       >
         <div
           style={{
-            background:"rgba(255,255,255,.05)",
-            backdropFilter:"blur(15px)",,
+            background:"#4b5563",
             color: "white",
             padding: "18px",
             fontSize: "20px",
@@ -279,24 +256,9 @@ export default function Chat() {
               <div
                 style={{
                   background:
-                    
-                    msg.user===auth.currentUser.email
-                    ? "linear-gradient(135deg,#667eea,#764ba2)"
-                    : "rgba(255,255,255,.9)",
-
-                     color:
-                     msg.user===auth.currentUser.email
-                      ? "white"
-                      : "#333",
-
-                      borderRadius:"18px",
-
-                      padding:"14px",
-
-                      maxWidth:
-                      window.innerWidth<768
-                       ? "85%"
-                       : "60%",
+                    msg.user === auth.currentUser.email
+                      ? "#DCF8C6"
+                      : "white",
                   padding: "12px",
                   borderRadius: "10px",
                   maxWidth: "60%",
@@ -315,7 +277,7 @@ export default function Chat() {
                     style={{
                       marginTop: "8px",
                       border: "none",
-                      background:"linear-gradient(135deg,#ff416c,#ff4b2b)",
+                      background: "#d9534f",
                       color: "white",
                       padding: "5px 10px",
                       borderRadius: "5px",
@@ -334,10 +296,7 @@ export default function Chat() {
           style={{
             display: "flex",
             padding: "15px",
-            background:"rgba(255,255,255,.08)",
-            backdropFilter:"blur(15px)",
-            flexWrap:"wrap",
-            gap:"10px",
+            background: "#f0f2f5",
           }}
         >
           <input
@@ -348,14 +307,12 @@ export default function Chat() {
             }}
             placeholder="Type a message..."
             style={{
-             flex:1,
-             minWidth:"220px",
-             padding:"14px",
-             borderRadius:"30px",
-             border:"none",
-             fontSize:"16px",
-             }}
-              
+              flex: 1,
+              padding: "12px",
+              borderRadius: "25px",
+              border: "1px solid #ccc",
+              outline: "none",
+            }}
           />
 
           <button
@@ -365,8 +322,8 @@ export default function Chat() {
               padding: "12px 20px",
               border: "none",
               borderRadius: "25px",
-              background:"linear-gradient(135deg,#667eea,#764ba2)",
-              padding:"14px 28px", color: "white",
+              background: "#6b7280",
+              color: "white",
               cursor: "pointer",
               fontWeight: "bold",
             }}
@@ -379,6 +336,3 @@ export default function Chat() {
   </div>
 );
 }
-  
-      
-  
