@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-/*import "./Chat.css";*/
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import {
@@ -100,156 +99,7 @@ export default function Chat() {
     navigate("/");
   };
 
-/* return (
-<div className="chat-page">
-
-  <div className="chat-container">
-
-    {/* Sidebar */}
-   /* <div className="sidebar">
-
-      <div className="chat-title">
-        💬 React Chat
-      </div>
-
-
-      <div className="room-create">
-
-        <input
-          value={newRoom}
-          onChange={(e)=>setNewRoom(e.target.value)}
-          placeholder="Create new room..."
-        />
-
-        <button onClick={createRoom}>
-          + Create Room
-        </button>
-
-      </div>
-
-
-      <div className="rooms">
-
-        {rooms.map((r)=>(
-
-          <div
-          key={r.id}
-          onClick={()=>setRoom(r.name)}
-          className={
-            room===r.name
-            ?"room active"
-            :"room"
-          }
-          >
-
-          💬 {r.name}
-
-          </div>
-
-        ))}
-
-      </div>
-
-
-      <button
-      className="logout"
-      onClick={logout}
-      >
-      Logout
-      </button>
-
-
-    </div>
-
-
-
-    {/* Chat Area */}
-
-    /*<div className="chat-area">
-
-
-      <div className="chat-header">
-        💬 {room}
-      </div>
-
-
-      <div className="messages">
-
-
-      {messages.map((msg)=>(
-
-      <div
-      key={msg.id}
-      className={
-        msg.user===auth.currentUser.email
-        ?"message right"
-        :"message left"
-      }
-      >
-
-
-      <div className="bubble">
-
-      <strong>{msg.user}</strong>
-
-      <p>{msg.text}</p>
-
-
-      {
-      msg.user===auth.currentUser.email &&
-      <button
-      className="delete"
-      onClick={()=>deleteMessage(msg.id)}
-      >
-      Delete
-      </button>
-      }
-
-
-      </div>
-
-
-      </div>
-
-
-      ))}
-
-
-      </div>
-
-
-
-      <div className="send-box">
-
-
-      <input
-      value={message}
-      onChange={(e)=>setMessage(e.target.value)}
-      onKeyDown={(e)=>{
-        if(e.key==="Enter") sendMessage()
-      }}
-      placeholder="Type a message..."
-      />
-
-
-      <button onClick={sendMessage}>
-      Send
-      </button>
-
-
-      </div>
-
-
-    </div>
-
-
-
-  </div>
-
-
-</div>
-);
-return (
+  return (
   <div
     style={{
       display: "flex",
@@ -486,3 +336,13 @@ return (
   </div>
 );
 }
+  
+       
+
+
+    
+
+     
+
+
+       
